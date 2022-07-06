@@ -1,14 +1,6 @@
 import pyzed.sl as sl
 import cv2
 
-init = sl.InitParameters()
-init.camera_resolution = sl.RESOLUTION.HD720
-init.depth_mode = sl.DEPTH_MODE.PERFORMANCE
-
-
-ip = "173.54.189.63"
-init.set_from_stream(ip)
-
 init_params = sl.InitParameters() # Set initial parameters
 init_params.sdk_verbose = 1 # Enable verbose mode
 input_t = sl.InputType()
@@ -17,7 +9,7 @@ init_params.input = input_t
 init_params.set_from_stream("173.54.189.63") # You can also use this
 
 cam = sl.Camera()
-status = cam.open(init)
+status = cam.open(init_params)
 #if status != sl.ERROR_CODE.SUCCESS:
     #print(repr(status))
     #exit(1)
