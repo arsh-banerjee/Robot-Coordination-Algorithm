@@ -73,34 +73,5 @@ if status != sl.ERROR_CODE.SUCCESS:
     print(repr(status))
     exit(1)
 
-runtime = sl.RuntimeParameters()
-
-key = ' '
-
-Tracker_dict = {'csrt': cv2.TrackerCSRT_create, 'kcf': cv2.TrackerKCF_create, 'boosting': cv2.TrackerBoosting_create,
-                'mil': cv2.TrackerMIL_create, 'medianflow': cv2.TrackerMedianFlow_create, 'mosse': cv2.TrackerMOSSE_create}
-
-trackers = cv2.MultiTracker_create()
-
-# Prepare new image size to retrieve half-resolution images
-image_size = zed.get_camera_information().camera_resolution
-image_size.width = image_size.width
-image_size.height = image_size.height
-
-# Declare your sl.Mat matrices
-image_zed = sl.Mat(image_size.width, image_size.height, sl.MAT_TYPE.U8_C4)
-depth_image_zed = sl.Mat(image_size.width, image_size.height, sl.MAT_TYPE.U8_C4)
-point_cloud = sl.Mat()
-
-# reading frames from the video
-err = zed.grab(runtime)
-zed.retrieve_image(image_zed, sl.VIEW.LEFT, sl.MEM.CPU, image_size)
-frame = cv2.cvtColor(image_zed.get_data(), cv2.COLOR_BGRA2BGR)
-
-# Number of objects to track
-k = 2
-
-boundingboxes = [(223, 394, 166, 129),(746, 416, 250, 151)]
-
 print("finished")
 
