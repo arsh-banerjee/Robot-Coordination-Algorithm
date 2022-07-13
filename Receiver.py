@@ -3,7 +3,7 @@ import numpy as np
 import pyzed.sl as sl
 import cv2
 import time
-import roslibpy
+#import roslibpy
 
 #client = roslibpy.Ros(host='192.168.1.190', port=9090)
 #client.run()
@@ -53,7 +53,7 @@ def crashCorrection(Paths, Objects, minDist, thres_dist, i):
         msg = roslibpy.Message({
             'linear': {'x': round(speed2 - vel_change, 2), 'y': 0.0, 'z': 0.0},
             'angular': {'x': 0.0, 'y': 0.0, 'z': 0.0}})
-    cmd_topic.publish(msg)
+    #cmd_topic.publish(msg)
     return round(vel_change,2)
 
 path = "./"
@@ -63,7 +63,7 @@ init.camera_resolution = sl.RESOLUTION.HD720
 init.depth_mode = sl.DEPTH_MODE.PERFORMANCE
 
 
-ip = '192.168.10.3'
+ip = '10.0.191.60'
 init.set_from_stream(ip)
 
 zed = sl.Camera()
