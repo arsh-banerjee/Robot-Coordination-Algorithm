@@ -51,6 +51,19 @@ while (True):
                                 'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
         cmd_topic.publish(msg)
 
+    if np.min(center_pixel_rgb) < 150:
+        while np.min(center_pixel_rgb) < 150:
+            angular_speed -= 0.01
+            msg = roslibpy.Message({'linear': {'x': linear_speed, 'y': 0.0, 'z': 0.0},
+                                    'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
+            cmd_topic.publish(msg)
+            ret, frame = vid.read()
+            center_pixel_rgb = frame[center_pixel[0], center_pixel[1], :]
+        angular_speed = 0
+        msg = roslibpy.Message({'linear': {'x': linear_speed, 'y': 0.0, 'z': 0.0},
+                                'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
+        cmd_topic.publish(msg)
+
     msg = roslibpy.Message({ 'linear': {'x': linear_speed, 'y': 0.0, 'z': 0.0},
         'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
 
