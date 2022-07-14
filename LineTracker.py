@@ -12,6 +12,7 @@ cmd_topic.advertise()
 
 angular_speed = 0
 linear_speed = 0.05
+linear_turning_speed = 0.02
 
 left_pixel = (300,50)
 right_pixel = (300,590)
@@ -20,15 +21,16 @@ while (True):
     # Capture the video frame
     # by frame
     ret, frame = vid.read()
-    center_pixel = (round(frame.shape[0] / 2), round(frame.shape[1] / 2))
+    center_pixel = (round(frame.shape[1] / 2), round(frame.shape[0] / 2))
     center_pixel_rgb = frame[center_pixel[0],center_pixel[1],:]
     left_pixel_rgb = frame[left_pixel[0],left_pixel[1],:]
     right_pixel_rgb = frame[right_pixel[0], right_pixel[1], :]
 
-    if np.min(right_pixel_rgb) > 150:
+    if np.min(right_pixel_rgb) > 150 and np.max(left_pixel_rgb) < 150:
         while(np.min(right_pixel_rgb) > 150):
-            angular_speed -= 0.01
-            msg = roslibpy.Message({'linear': {'x': linear_speed, 'y': 0.0, 'z': 0.0},
+            if angular_speed > -0.06:
+                angular_speed -= 0.01
+            msg = roslibpy.Message({'linear': {'x': linear_turning_speed, 'y': 0.0, 'z': 0.0},
                                     'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
             cmd_topic.publish(msg)
             ret, frame = vid.read()
@@ -38,10 +40,11 @@ while (True):
                                 'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
         cmd_topic.publish(msg)
 
-    if np.min(left_pixel_rgb) > 150:
+    if np.min(left_pixel_rgb) > 150 and np.max(right_pixel_rgb) < 150:
         while(np.min(left_pixel_rgb) > 150):
-            angular_speed += 0.01
-            msg = roslibpy.Message({'linear': {'x': linear_speed, 'y': 0.0, 'z': 0.0},
+            if angular_speed < 0.06:
+                angular_speed += 0.01
+            msg = roslibpy.Message({'linear': {'x': linear_turning_speed, 'y': 0.0, 'z': 0.0},
                                     'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
             cmd_topic.publish(msg)
             ret, frame = vid.read()
@@ -50,24 +53,6 @@ while (True):
         msg = roslibpy.Message({'linear': {'x': linear_speed, 'y': 0.0, 'z': 0.0},
                                 'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
         cmd_topic.publish(msg)
-
-    if np.min(center_pixel_rgb) < 150:
-        while np.min(center_pixel_rgb) < 150:
-            angular_speed -= 0.01
-            msg = roslibpy.Message({'linear': {'x': linear_speed, 'y': 0.0, 'z': 0.0},
-                                    'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
-            cmd_topic.publish(msg)
-            ret, frame = vid.read()
-            center_pixel_rgb = frame[center_pixel[0], center_pixel[1], :]
-        angular_speed = 0
-        msg = roslibpy.Message({'linear': {'x': linear_speed, 'y': 0.0, 'z': 0.0},
-                                'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
-        cmd_topic.publish(msg)
-
-    msg = roslibpy.Message({ 'linear': {'x': linear_speed, 'y': 0.0, 'z': 0.0},
-        'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
-
-    cmd_topic.publish(msg)
 
     # Display the resulting frame
     cv2.imshow('frame', frame)
