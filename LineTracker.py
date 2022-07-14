@@ -27,18 +27,14 @@ while (True):
     cmd_topic.publish(msg)
 
     center_pixel = (round(frame.shape[1] / 2), round(frame.shape[0] / 2))
-    center_pixel_rgb = frame[center_pixel[0]:center_pixel[0]+10,center_pixel[1]:center_pixel[1]+10,:]
-    center_pixel_rgb = np.average(center_pixel_rgb)
+    center_pixel_rgb = frame[center_pixel[0],center_pixel[1],:]
     left_pixel_rgb = frame[left_pixel[0],left_pixel[1],:]
-    left_pixel_rgb = frame[left_pixel[0]:left_pixel[0] + 10, left_pixel[1]:left_pixel[1] + 10, :]
-    left_pixel_rgb = np.average(left_pixel_rgb)
     right_pixel_rgb = frame[right_pixel[0], right_pixel[1], :]
-    right_pixel_rgb = frame[right_pixel[0]:right_pixel[0] + 10, right_pixel[1]:right_pixel[1] + 10, :]
-    right_pixel_rgb = np.average(right_pixel_rgb)
+    fleft = frame[left_pixel[0]-15, left_pixel[1], :]
+    fright = frame[right_pixel[0]-15, right_pixel[1], :]
 
 
-
-    if np.min(right_pixel_rgb) > 150 and np.max(left_pixel_rgb) < 150:
+    if np.min(right_pixel_rgb) > 150 and np.max(left_pixel_rgb) < 150 and np.max(fleft) < 150:
         while np.min(right_pixel_rgb) > 150:
             if angular_speed > -0.06:
                 angular_speed -= 0.01
@@ -52,7 +48,7 @@ while (True):
                                 'angular': {'x': 0.0, 'y': 0.0, 'z': angular_speed}})
         cmd_topic.publish(msg)
 
-    if np.min(left_pixel_rgb) > 150 and np.max(right_pixel_rgb) < 150:
+    if np.min(left_pixel_rgb) > 150 and np.max(right_pixel_rgb) < 150 and np.max(fright) < 150:
         while(np.min(left_pixel_rgb) > 150):
             if angular_speed < 0.06:
                 angular_speed += 0.01
